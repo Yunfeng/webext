@@ -8,16 +8,16 @@
 
 // document.title='test: 12345'
 
-console.log(browser.extension.getURL(""));
-console.log($("form input"))
+// console.log(browser.extension.getURL(""));
+// console.log($("form input"))
 
-var myPort = browser.runtime.connect({name:"port-from-cs"});
-console.log(myPort)
+let myPort = browser.runtime.connect({name:"port-from-cs"});
+// console.log(myPort)
 myPort.postMessage({greeting: "hello from content script"});
 
 myPort.onMessage.addListener(function(m) {
-  console.log("In content script, received message from background script: ");
-  console.log(m.greeting);
+  // console.log("In content script, received message from background script: ");
+  console.log(m);
 });
 
 document.body.addEventListener("click", function() {
