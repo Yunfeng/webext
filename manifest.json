@@ -11,13 +11,13 @@
   },
 
   "permissions": [
-    "*://developer.mozilla.org/*",
+    "*://yh.90sky.com/*",
     "webRequest"
   ],
 
   "content_scripts": [
     {
-      "matches": ["*://*.90sky.com/*"],
+      "matches": ["*://*.ceair.com/*"],
       "js": ["jquery-3.3.1.min.js", "borderify.js"]
     }
   ],

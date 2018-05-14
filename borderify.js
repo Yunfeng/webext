@@ -1,14 +1,15 @@
 // document.body.style.border = "5px solid red";
-$.post('http://www.eastday.com', function(v) {
-	console.log(v)	
-})
+// $.get('http://yh.90sky.com', function(v) {
+// 	console.log(v)	
+// })
 
 
 // $("input").val("aa")
 
-document.title='test: 12345'
+// document.title='test: 12345'
 
 console.log(browser.extension.getURL(""));
+console.log($("form input"))
 
 var myPort = browser.runtime.connect({name:"port-from-cs"});
 console.log(myPort)
