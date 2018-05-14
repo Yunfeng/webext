@@ -25,12 +25,19 @@ popupPort.onMessage.addListener(function(m) {
 document.body.addEventListener("click", function(e) {
 	console.log(e)
 	console.log(e.target.id)
-	if (e.target.id === 'btnTest') {
+	if (e.target.id === 'btnLogin') {
 		popupPort.postMessage({to: 'content',
 			action: "login",
 			username: "username",
 			password: "password",
 			greeting: "Hi, content.js! I am popup.js."
+		});
+	} else if (e.target.id === 'btnData') {
+		popupPort.postMessage({to: 'content',
+			action: "data",
+			// username: "username",
+			// /password: "password",
+			greeting: "auto fill form"
 		});
 	}
   
