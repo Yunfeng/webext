@@ -10,11 +10,20 @@
     "48": "icons/border-48.png"
   },
 
+  "permissions": [
+    "*://developer.mozilla.org/*",
+    "webRequest"
+  ],
+
   "content_scripts": [
     {
       "matches": ["*://*.90sky.com/*"],
       "js": ["jquery-3.3.1.min.js", "borderify.js"]
     }
-  ]
+  ],
+
+  "background": {
+    "scripts": ["background.js"]
+  }
 
 }
