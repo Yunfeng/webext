@@ -1,11 +1,11 @@
 let portFromCS, portFromPopup;
 
-console.log('portFromCS:' + portFromCS)
-console.log('portFromPopup:' + portFromPopup)
+// console.log('portFromCS:' + portFromCS)
+// console.log('portFromPopup:' + portFromPopup)
 
 
 function connected(p) {
-  console.log(p)
+  // console.log(p)
   if (p.name === 'port-popup') {
     portFromPopup = p;
     portFromPopup.postMessage({greeting: "hi, I am background script!"});
@@ -13,10 +13,10 @@ function connected(p) {
       // console.log("In background script, received message from content script")
       console.log("to:" + m.to)
       if (m.to === "content") {
-        console.log("portFromCS.postMessage(m)")
+        // console.log("portFromCS.postMessage(m)")
         portFromCS.postMessage(m)
       } else {
-        console.log(m);
+        // console.log(m);
       }
     });
   } else if (p.name === 'port-content') {
@@ -24,11 +24,11 @@ function connected(p) {
     portFromCS.postMessage({greeting: "hi, I am background script!"});
     portFromCS.onMessage.addListener(function(m) {
       // console.log("In background script, received message from content script")
-      console.log("to:" + m.to)
+      // console.log("to:" + m.to)
       if (m.to === "content") {
         portFromCS.postMessage(m)
       } else {
-        console.log(m);
+        // console.log(m);
       }
     });    
   }
@@ -39,17 +39,31 @@ browser.runtime.onConnect.addListener(connected);
 
 // console.log(browser)
 browser.tabs.onActivated.addListener(function() {
-  portFromCS.postMessage({greeting: "Tab is activated!"});
+  // portFromCS.postMessage({greeting: "Tab is activated!"});
 });
 
-function logURL(requestDetails) {
-  // console.log("Loading: " + requestDetails.url);
+function logUrlBeforeRequest(requestDetails) {
+  console.log("Loading: " + requestDetails.url);
+  console.log(requestDetails);
 }
 
 browser.webRequest.onBeforeRequest.addListener(
-  logURL,
-  {urls: ["<all_urls>"]}
+  logUrlBeforeRequest,
+  {urls: ["*://travel.ceair.com/team/*"]}
 );
+
+browser.webRequest.onCompleted.addListener(
+  logUrlCompleted,             // function
+  {urls: ["*://travel.ceair.com/team/*"]}
+)
+
+function logUrlCompleted(requestDetails) {
+  console.log("Completed: " + requestDetails.url);
+  console.log(requestDetails);
+  portFromCS.postMessage({'action': 'request_done',
+   requestDetails});
+}
+
 
 function openPage() {
   browser.tabs.create({
