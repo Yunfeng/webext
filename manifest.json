@@ -7,7 +7,7 @@
   "description": "Adds a red border to all webpages matching mozilla.org.",
 
   "icons": {
-    "48": "icons/star.png"
+    "38": "icons/star.png"
   },
 
   "permissions": [

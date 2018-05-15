@@ -7,7 +7,8 @@ let flightIndex = -1;
 let step = 0;
 
 
-const searchFare = function() {
+function searchFare() {
+	console.log("searchFare");
   step = 2;
   const frameContent = $("#fm" ).contents();
   let strFilter = "[onclick*='checkConectInfoAndQueryTeamFareAction']";
@@ -16,13 +17,19 @@ const searchFare = function() {
   $(ipt).click();
 };
 
+function reset() {
+	flightIndex = -1;
+	step = 0;
+	flightNos = null;	
+};
+
 contentPort.onMessage.addListener(function(m){
-    // console.log("In content script, received message from background script: ");
   console.log(m);
-  console.log(step);
   const frameContent = $("#fm" ).contents();
 
-  if (m.action === "login") {
+  if (m.action === 'reset') {
+  	reset();
+  } else if (m.action === "login") {
     console.log($("#j_username"))
     console.log($(".item-tip"))
     $(".item-tip").addClass("item-tip-on");
@@ -31,15 +38,16 @@ contentPort.onMessage.addListener(function(m){
   } else if (m.action === "data" && step === 0) {
     step = 1;
 
-    const frameContent = $("#fm" ).contents();
-
     const element = frameContent.find("#adtNum").get(0);
     $(element).val(20);
 
-    const btnAdd = frameContent.find("a .add")
-    $(btnAdd).click()
+    const curCodes = frameContent.find("input").filter("[name='team.depCd']");
+    if (curCodes.length === 1) {
+    	const btnAdd = frameContent.find("a .add")
+    	$(btnAdd).click()
+    }
 
-    
+   
     const depCodes = frameContent.find("input").filter("[name='team.depCd']");
     $(depCodes.get(0)).val("TSN");
     $(depCodes.get(1)).val("KMG");
@@ -58,27 +66,41 @@ contentPort.onMessage.addListener(function(m){
   } else if (m.action === "request_done") {
     const url = m.requestDetails.url;
     console.log(url);
-    if (url.indexOf('/team/teamSearchFlightAction_check.do') < 0) return;
+    if (url.indexOf('/team/teamSearchFlightAction_check.do') >= 0) {
+    	// 查询航班完成
+	    console.log("flightIndex: " + flightIndex);
+	    if (flightIndex === 0) {
+	      const strFilter = "[onclick*='MU5752']";
+	      const ipt = frameContent.find("#teamFlight____ input").filter(strFilter).get(0);
+	      // console.log(ipt);
+	      $(ipt).click();
+	    } else if (flightIndex === 1) {
+	      let strFilter = "[onclick*='MU5751']";
+	      let ipt = frameContent.find("#teamFlight____ input").filter(strFilter).get(0);
+	      // console.log(ipt);
+	      $(ipt).click();
+	    }    	
+    } else if (url.indexOf('/team/teamSearchFlightAction_edit.do') >= 0) {
+    	// 选择航班完成
+    	if (flightIndex === 0) {
+      		$(flightNos.get(1)).click();
+	      	flightIndex = 1;
+    	} else if (flightIndex === 1) {
+	      flightIndex = -1;
+	      searchFare();
+    	}
+    } else if (url.indexOf('/team/teamSearchFlightAction_fare.do') >= 0) {
+    	// 运价查询完成
+    	console.log("fare done, fill rest info.");
+    	let ipt = frameContent.find("#teamName");
+    	$(ipt).val("团队名");
 
-    console.log("flightIndex: " + flightIndex);
-    if (flightIndex === 0) {
-      const strFilter = "[onclick*='MU5752']";
-      const ipt = frameContent.find("#teamFlight____ input").filter(strFilter).get(0);
-      console.log(ipt);
-      $(ipt).click();
+    	ipt = frameContent.find("#contact");
+    	$(ipt).val("联系人");
 
-      $(flightNos.get(1)).click();
-      flightIndex = 1;
-    } else if (flightIndex === 1) {
-      let strFilter = "[onclick*='MU5751']";
-      let ipt = frameContent.find("#teamFlight____ input").filter(strFilter).get(0);
-      // console.log(ipt);
-      $(ipt).click();
-      flightIndex = -1;
-      // 第一步完成，下一步查找运价
-      console.log(this);
-      setTimeout("searchFare()", 1500);
-      
+    	ipt = frameContent.find("#contactMobile");
+    	$(ipt).val("13988880000");
     }
+
   }  
 });
