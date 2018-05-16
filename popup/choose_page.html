@@ -9,12 +9,14 @@
 
 <body>
 	<div class="container">
-    <div class="card" id="divLogin" style="display: none">
+    <div class="card row">
+      <div class="card-body">
+        <span id="errmsg" class="text-danger"></span>
+      </div>
+    </div>
+    <div class="card row" id="divLogin" style="display: none">
       <div class="card-body">
     		<form>
-          <div class="form-group">
-            <span id="errmsg" class="text-danger"></span>
-          </div>
           <div class="form-group">
             <input type="text" class="form-control" id="username" placeholder="用户名">
           </div>
@@ -33,15 +35,28 @@
         </form>
       </div>
     </div>
-    <div class="card" id="divWork" style="display: none">
+    <div class="card row" id="divWork" style="display: none">
       <div class="card-header">
         当前用户：<span id="currentUsername" class="text-success"></span> 
       </div>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>团队名</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <select class="form-control" id="teamNameSelect">
+              </select>
+            </td>
+          </tr>          
+        </tbody>
+      </table>
       <button class="btn btn-sm btn-danger mt-5" id="btnData">Data</button>
     </div>
 	</div>
-	<!-- <button class="btn btn-sm btn-danger" id="btnLogin">Login</button> -->
-	
 
   <script src="../jquery-3.3.1.min.js"></script>
   <script src="choose_page.js"></script>
