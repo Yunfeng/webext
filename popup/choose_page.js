@@ -1,3 +1,5 @@
+let username;
+
 document.addEventListener("click", function(e) {
   if (!e.target.classList.contains("page-choice")) {
     return;
@@ -45,18 +47,62 @@ popupPort.onMessage.addListener(function(m) {
 // 	}
 // });
 
+const WEBAPP = 'http://tms-2.90sky.com/Flight';
+
 $(function() {
+	checkLoginStatus();
+
 	$("#btnLogin").click(function() {
-		const url = "http://yh.90sky.com/Flight/login";
+		
+		const url = WEBAPP + "/ajaxLogin.do";
 		const params = {
-			"username": "yhtest",
-			"password": "123abc",
-			"captchaValue": "123"
+			"username": $("#username").val(),
+			"password": $("#password").val(),
+			"captchaValue": $("#captchaCode").val()
 		}
 		console.log(params);
 
 		$.post(url, params, function(v) {
 			console.log(v)
+			// alert(v);
+			if (v.status !== 'OK') {
+				// $("#errmsg").text(v.errMsg);
+				showErrMsg(v.errMsg);
+			}
 		})
 	});
+
+	$("#captchaImage").click(refreshCapchaImage);
 });
+
+function showErrMsg(msg) {
+	$("#errmsg").text(msg);
+}
+
+function refreshCapchaImage() {
+	const url = WEBAPP + '/captcha.do?' + Math.floor(Math.random() * 100);
+	console.log(url);
+ 	$('#captchaImage').attr('src', url);
+}
+
+function checkLoginStatus() {
+	const url = WEBAPP + "/checkLoginStatus";
+	$.post(url, function(v) {
+    console.log(v);
+		if (v.status === 'OK') {
+      username = v.desc;
+			$("#divWork").show();
+			$("#divLogin").hide();
+      $("#currentUsername").text(username);
+		} else {
+      $("#divWork").hide();
+      $("#divLogin").show();
+      refreshCapchaImage();
+    }
+		// alert(v);
+		// if (v.status !== 'OK') {
+		// 	// $("#errmsg").text(v.errMsg);
+		// 	showErrMsg(v.errMsg);
+		// }
+	})
+}

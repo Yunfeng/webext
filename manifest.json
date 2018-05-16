@@ -11,10 +11,11 @@
   },
 
   "permissions": [
-    "*://yh.90sky.com/*",
+    "*://tms-2.90sky.com/*",
     "webRequest",
     "storage",
     "tabs",
+    "browsingData",
     "<all_urls>"
   ],
 
