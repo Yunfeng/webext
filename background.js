@@ -1,11 +1,8 @@
+const WEBAPP = 'http://tms-2.90sky.com/Flight';
+
 let portFromCS, portFromPopup;
 
-// console.log('portFromCS:' + portFromCS)
-// console.log('portFromPopup:' + portFromPopup)
-
-
 function connected(p) {
-  // console.log(p)
   if (p.name === 'port-popup') {
     portFromPopup = p;
     portFromPopup.postMessage({greeting: "hi, I am background script!"});
@@ -23,12 +20,12 @@ function connected(p) {
     portFromCS = p;
     portFromCS.postMessage({greeting: "hi, I am background script!"});
     portFromCS.onMessage.addListener(function(m) {
-      // console.log("In background script, received message from content script")
-      // console.log("to:" + m.to)
       if (m.to === "content") {
         portFromCS.postMessage(m)
+      } else if (m.to === "server" && m.action === 'done') {
+        autoFillFormDone(m.id);
       } else {
-        // console.log(m);
+        console.log(m);
       }
     });    
   }
@@ -37,14 +34,9 @@ function connected(p) {
 
 browser.runtime.onConnect.addListener(connected);
 
-// console.log(browser)
-browser.tabs.onActivated.addListener(function() {
-  // portFromCS.postMessage({greeting: "Tab is activated!"});
-});
-
 function logUrlBeforeRequest(requestDetails) {
   console.log("Loading: " + requestDetails.url);
-  console.log(requestDetails);
+  // console.log(requestDetails);
 }
 
 browser.webRequest.onBeforeRequest.addListener(
@@ -59,16 +51,23 @@ browser.webRequest.onCompleted.addListener(
 
 function logUrlCompleted(requestDetails) {
   console.log("Completed: " + requestDetails.url);
-  console.log(requestDetails);
+  // console.log(requestDetails);
   portFromCS.postMessage({'action': 'request_done',
    requestDetails});
 }
 
-
-function openPage() {
-  browser.tabs.create({
-    url: "http://bijia.buk.cn"
-  });
+function autoFillFormDone(id) {
+  //通知后台该订单自动填表完毕
+  const url = WEBAPP + "/charterFlight/" + id + "/status/applying/webext";
+  $.post(url, function(v) {
+    console.log(v)
+  })    
 }
 
-browser.browserAction.onClicked.addListener(openPage);
+// function openPage() {
+//   browser.tabs.create({
+//     url: "http://bijia.buk.cn"
+//   });
+// }
+
+// browser.browserAction.onClicked.addListener(openPage);

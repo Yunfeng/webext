@@ -1,3 +1,4 @@
+const WEBAPP = 'http://tms-2.90sky.com/Flight';
 let username;
 
 // document.addEventListener("click", function(e) {
@@ -47,7 +48,7 @@ popupPort.onMessage.addListener(function(m) {
 // 	}
 // });
 
-const WEBAPP = 'http://tms-2.90sky.com/Flight';
+
 
 $(function() {
 	checkLoginStatus();
@@ -138,12 +139,13 @@ function autoFillForm() {
   // console.log();
   const url = WEBAPP + '/charterFlight/detail/' + $("#teamNameSelect").val();
   $.post(url, function(v) {
-    console.log(v);
+    // console.log(v);
     popupPort.postMessage({to: 'content',
       action: "reset"
     });
 
     const content = {
+      'id': v.id,
       'count': v.totalSeats,
       'linkMan': v.linkMan,
       'mobile': v.contactMobile,
@@ -162,7 +164,7 @@ function autoFillForm() {
       content.flights.push(flt);
     }
 
-    console.log(content);
+    // console.log(content);
 
     popupPort.postMessage({to: 'content',
       action: "data",
@@ -170,6 +172,6 @@ function autoFillForm() {
       greeting: "auto fill form"
     });
 
-
+    window.close();
   })  
 }
