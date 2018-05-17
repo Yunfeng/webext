@@ -6,10 +6,6 @@
 
   "description": "A assistant tool for MU B2T",
 
-  "icons": {
-    "38": "icons/star.png"
-  },
-
   "permissions": [
     "*://tms-2.90sky.com/*",
     "webRequest",
@@ -35,8 +31,7 @@
     "browser_style": true,
     "default_popup": "popup/choose_page.html",
     "default_icon": {
-      "48": "icons/page-48.png",
-      "32": "icons/page-32.png"
+      "40": "icons/zy-40.png"
     }
   }
 
